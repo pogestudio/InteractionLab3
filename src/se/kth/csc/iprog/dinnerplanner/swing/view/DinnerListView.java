@@ -5,7 +5,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import javax.swing.DefaultListModel;
@@ -17,10 +18,6 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 
 import se.kth.csc.iprog.dinnerplanner.model.Dish;
 
@@ -31,17 +28,20 @@ import se.kth.csc.iprog.dinnerplanner.model.DishListListener;
 import se.kth.csc.iprog.dinnerplanner.model.Ingredient;
 import se.kth.csc.iprog.dinnerplanner.swing.view.DinnerDishList.DinnerListListener;
 
-public class DinnerListView extends JPanel implements ChangeListener{
+public class DinnerListView extends JPanel implements Observer{
 
 	private static final long serialVersionUID = 1L;
 
 	private DinnerDishList dishes;
 	private DinnerModel thaDinnerModel;
 	private JLabel totalCostLabel;
+	private JSpinner numPeopleSpinner; 
 	
-	public DinnerListView () {
+	@SuppressWarnings("unchecked")
+	public DinnerListView (DinnerModel model) {
 		
-		thaDinnerModel = new DinnerModel();
+		thaDinnerModel = model;
+		thaDinnerModel.addObserver(this);
 
 		this.setLayout(new BorderLayout());
 
@@ -51,12 +51,11 @@ public class DinnerListView extends JPanel implements ChangeListener{
 		top.add(new JLabel("Number of people: "));
 		top.setBorder(new EmptyBorder(10, 30, 10, 30) );
 
-		SpinnerModel model = new SpinnerNumberModel(2, 1, 100, 1);
-		JSpinner numPeople = new JSpinner(model);
+		SpinnerModel spinmodel = new SpinnerNumberModel(2, 1, 100, 1);
+		numPeopleSpinner = new JSpinner(spinmodel);
 		
-        numPeople.addChangeListener(this);
 		
-		top.add(numPeople);
+		top.add(numPeopleSpinner);
 		top.add(new JLabel("Total cost: "));
 		
 		totalCostLabel = new JLabel("$94300");
@@ -69,6 +68,7 @@ public class DinnerListView extends JPanel implements ChangeListener{
 		middle.setLayout(new BorderLayout());
 	
 		
+		@SuppressWarnings("rawtypes")
 		DefaultListModel lmodel = new DefaultListModel();
 		for(Dish d : thaDinnerModel.getFullMenu()) {
 			lmodel.addElement(d);
@@ -136,24 +136,22 @@ public class DinnerListView extends JPanel implements ChangeListener{
 			});
 
 		this.add(bottom, BorderLayout.SOUTH);
-        onNumPeopleChanged(numPeople);
+		updateCostLabel();
 	}
 	
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		onNumPeopleChanged((JSpinner)e.getSource());
-	}
-
-	public void onNumPeopleChanged(JSpinner spinner) {
-		int value = (Integer) spinner.getValue();
-		thaDinnerModel.setNumberOfGuests(value);
-		updateCostLabel();
-		this.dishes.updateNumberOfPeople(value);
+	public JSpinner getNumPeopleSpinner() {
+		return numPeopleSpinner;
 	}
 	
 	public void updateCostLabel() {
 		float newCost = thaDinnerModel.getTotalMenuPrice();
 		totalCostLabel.setText("$" + String.valueOf(newCost));
+		this.dishes.updateNumberOfPeople(thaDinnerModel.getNumberOfGuests());
 	}
-	
+
+	@Override
+	public void update(Observable o, Object arg) {
+		System.out.println("update: " + arg);
+		updateCostLabel();
+	}
 }

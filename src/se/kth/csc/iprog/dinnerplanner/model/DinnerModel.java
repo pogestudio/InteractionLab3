@@ -2,9 +2,10 @@ package se.kth.csc.iprog.dinnerplanner.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Observable;
 import java.util.Set;
 
-public class DinnerModel implements IDinnerModel {
+public class DinnerModel extends Observable implements IDinnerModel {
 
 	Set<Dish> dishes = new HashSet<Dish>();
 	ArrayList<Dish> selectedDishes;
@@ -147,6 +148,8 @@ public class DinnerModel implements IDinnerModel {
 
 	public void setNumberOfGuests(int numberOfGuests) {
 		this._numberOfGuests = numberOfGuests;
+		setChanged();
+		notifyObservers();
 	}
 
 	/**
@@ -233,6 +236,8 @@ public class DinnerModel implements IDinnerModel {
 
 		selectedDishes.set(dishToSelect.type - 1, dishToSelect);
 		System.out.println("Added dish!");
+		setChanged();
+		notifyObservers();
 	}
 
 	// Add dish to currently selectd dishes!
@@ -241,29 +246,9 @@ public class DinnerModel implements IDinnerModel {
 		if(selectedDishes.get(dishToDelete.type - 1) == dishToDelete);
 			selectedDishes.set(dishToDelete.type - 1, null);
 		System.out.println("Removed dish");
+		setChanged();
+		notifyObservers();
 	}
 
-	// Add dish to currently selectd dishes!
-	public void printAllDishes() {
-		System.out.println("WANT TODOPRINT TIDSHES");
-		for (Dish d : selectedDishes) {
-			if(d != null)
-				System.out.println("dish:: dish" + d.getName());
-		}
-
-	}
-
-	// TEMPORARY THING
-	// #TODO remove
-	public void tempSeedOfChoice() {
-		Set<Dish> allDishes = getDishes();
-		int i = 0;
-		for (Dish d : allDishes) {
-			if (d != null && i > 2)
-				break;
-			selectDish(d);
-		}
-		System.out.println("Seeded!");
-	}
 
 }

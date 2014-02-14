@@ -21,14 +21,12 @@ public class DishListListener implements DinnerListListener {
 	    	System.out.println("dish added: " + d.getName());
 	    	
 	    	thaDinnerModel.selectDish(d);
-	    	thaDinnerModel.printAllDishes();
 	    	
 	    }
 	    public void onRemoved(Dish d) {
 	    	System.out.println("dish removed: " + d.getName());
 	    	
 	    	thaDinnerModel.deleteDish(d);
-	    	thaDinnerModel.printAllDishes();
 	    }
 		public DinnerModel getThaDinnerModel() {
 			return thaDinnerModel;
