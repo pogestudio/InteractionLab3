@@ -12,9 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.TransferHandler;
 
-import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
 import se.kth.csc.iprog.dinnerplanner.model.Dish;
-import se.kth.csc.iprog.dinnerplanner.model.IDinnerModel;
 
 @SuppressWarnings("rawtypes")
 public class DishReceiverHandler extends TransferHandler {
