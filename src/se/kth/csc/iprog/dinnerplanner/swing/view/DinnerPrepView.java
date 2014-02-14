@@ -69,7 +69,6 @@ public class DinnerPrepView extends JPanel implements Observer {
 	
 	private String getDesc(int type){
 		Dish sel_dish = model.getSelectedDish(type);
-		System.out.println("null - " + sel_dish);
 
 		String mealtype = "";
 		if(type == 1){

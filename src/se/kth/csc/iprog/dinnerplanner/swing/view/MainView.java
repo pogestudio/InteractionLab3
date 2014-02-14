@@ -22,8 +22,6 @@ public class MainView extends JPanel {
 	
 	public MainView(DinnerModel instancedModel){
 		wholeModel = instancedModel;
-		//DishDetails.OpenWindow(wholeModel.getSelectedDish(1));
-		//ListIngredients.OpenWindow(wholeModel.getAllIngredients());
 		
 		this.setLayout(new BorderLayout());
 		
@@ -35,13 +33,11 @@ public class MainView extends JPanel {
 				
 		dinnerListController = new DinnerListController(dinnerListView,  wholeModel);
 		
-		
 		split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
 				dishes,
 				dinnerListView);
 		
 		split.setResizeWeight(0.44);
-		//split.setDividerLocation(150);
 		
 		this.add(split, BorderLayout.CENTER);
 	}

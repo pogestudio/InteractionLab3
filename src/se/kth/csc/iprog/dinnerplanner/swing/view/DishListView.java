@@ -23,7 +23,6 @@ import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class DishListView extends JPanel{
 	private static final long serialVersionUID = 1L;
-	private JList dishes;
 	
 	public static class CellRenderer extends JPanel implements ListCellRenderer {
 		private static final long serialVersionUID = 1L;
@@ -100,7 +99,7 @@ public class DishListView extends JPanel{
 		for (Dish dish : dishList) {
 			model.addElement(dish);
 		}
-		dishes = new JList(model);
+		final JList dishes = new JList(model);
 		dishes.setDragEnabled(true);
 		dishes.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		dishes.setVisibleRowCount(-1);
@@ -109,12 +108,13 @@ public class DishListView extends JPanel{
 		dishes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		panel.add(dishes, BorderLayout.CENTER);
 		
+		 
 		dishes.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
 				
 				if(event.getClickCount() == 2)
-					clickButton(event.getPoint());
+					clickButton(event.getPoint(), dishes);
 			}
 		});
 		
@@ -145,7 +145,7 @@ public class DishListView extends JPanel{
 		return dishNames;
 	}
 
-	private void clickButton(Point point) {
+	private void clickButton(Point point, JList dishes) {
 	    int index = dishes.locationToIndex(point);
 		
 		DefaultListModel m = (DefaultListModel)dishes.getModel();
