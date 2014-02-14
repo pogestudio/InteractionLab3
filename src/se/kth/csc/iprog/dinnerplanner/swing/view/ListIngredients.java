@@ -15,22 +15,6 @@ import se.kth.csc.iprog.dinnerplanner.model.Ingredient;
 
 public class ListIngredients {
 	
-	public static void OpenWindow(Set<Ingredient> Ingredients)
-	{
-		ListIngredients ingredientsInList = new ListIngredients();
-		JScrollPane tableToShow = ingredientsInList.getTableForIngredients(Ingredients);
-		 JFrame frame = new JFrame("Ingredients"); 
-		 //JLabel textLabel = new JLabel("I'm a label in the window",SwingConstants.CENTER);
-		tableToShow.setPreferredSize(new Dimension(500, 500));
-		tableToShow.setMinimumSize(new Dimension(100, 100));
-
-		 frame.getContentPane().add(tableToShow, BorderLayout.CENTER); 
-		 //Display the window. 
-		 frame.setLocationRelativeTo(null); 
-		 frame.pack(); 
-		 frame.setVisible(true); 
-	}
-	
 	public JScrollPane getTableForIngredients(Set<Ingredient> Ingredients)
 	{	
 

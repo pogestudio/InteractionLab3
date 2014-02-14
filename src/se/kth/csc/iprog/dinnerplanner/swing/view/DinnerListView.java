@@ -26,6 +26,7 @@ import external.WrapLayout;
 import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
 import se.kth.csc.iprog.dinnerplanner.model.DishListListener;
 import se.kth.csc.iprog.dinnerplanner.model.Ingredient;
+import se.kth.csc.iprog.dinnerplanner.swing.controller.ListIngredientsController;
 import se.kth.csc.iprog.dinnerplanner.swing.view.DinnerDishList.DinnerListListener;
 
 public class DinnerListView extends JPanel implements Observer{
@@ -127,8 +128,9 @@ public class DinnerListView extends JPanel implements Observer{
 				  {
 					  //thaDinnerModel.tempSeedOfChoice();
 					  
-					  Set<Ingredient> allIngredients = thaDinnerModel.getAllIngredients();
-					   ListIngredients.OpenWindow(allIngredients);
+					  ListIngredientsController uberList = new ListIngredientsController(thaDinnerModel);
+					  uberList.OpenWindowForDinner();
+					  
 
 				  }
 			   System.out.println("want to Ingredients");
