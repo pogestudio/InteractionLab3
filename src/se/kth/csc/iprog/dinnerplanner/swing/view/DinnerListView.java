@@ -3,11 +3,9 @@ package se.kth.csc.iprog.dinnerplanner.swing.view;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -25,7 +23,6 @@ import external.WrapLayout;
 
 import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
 import se.kth.csc.iprog.dinnerplanner.model.DishListListener;
-import se.kth.csc.iprog.dinnerplanner.model.Ingredient;
 import se.kth.csc.iprog.dinnerplanner.swing.view.DinnerDishList.DinnerListListener;
 
 public class DinnerListView extends JPanel implements Observer{
@@ -36,6 +33,8 @@ public class DinnerListView extends JPanel implements Observer{
 	private DinnerModel thaDinnerModel;
 	private JLabel totalCostLabel;
 	private JSpinner numPeopleSpinner; 
+	JButton preparation;
+	JButton ingredients;
 	
 	@SuppressWarnings("unchecked")
 	public DinnerListView (DinnerModel model) {
@@ -100,47 +99,34 @@ public class DinnerListView extends JPanel implements Observer{
 		middle.add(scroll, BorderLayout.CENTER);
 		scroll.setBorder(new EmptyBorder(0,0,0,0));
 	
-		
 		this.add(middle, BorderLayout.CENTER);
 		
 		//Bottom - buttons
 		JPanel bottom = new JPanel();
 
-		JButton preparation =new JButton("Preparation"); 
+		preparation =new JButton("Preparation"); 
 		bottom.add(preparation);
-		JButton ingredients =new JButton("Ingredients"); 
+		ingredients =new JButton("Ingredients"); 
 		bottom.add(ingredients);
-		
-		preparation.addActionListener(new ActionListener() {
-			  public void actionPerformed(ActionEvent evt) {
-			   System.out.println("want to POPPRESENTATION");
-			   
-			   if(thaDinnerModel != null){
-				   DinnerPrepView.OpenWindow(thaDinnerModel);
-			   }
-			  }
-			});
-		ingredients.addActionListener(new ActionListener() {
-			  public void actionPerformed(ActionEvent evt) {
-				  
-				   if(thaDinnerModel != null)
-				  {
-					  //thaDinnerModel.tempSeedOfChoice();
-					  
-					  Set<Ingredient> allIngredients = thaDinnerModel.getAllIngredients();
-					   ListIngredients.OpenWindow(allIngredients);
-
-				  }
-			   System.out.println("want to Ingredients");
-			  }
-			});
 
 		this.add(bottom, BorderLayout.SOUTH);
 		updateCostLabel();
 	}
+
+	public void addPreparationButtonListener(ActionListener listener) {
+		preparation.addActionListener(listener);
+	}
+	
+	public void addIngredientsButtonListener(ActionListener listener) {
+		ingredients.addActionListener(listener);
+	}
 	
 	public JSpinner getNumPeopleSpinner() {
 		return numPeopleSpinner;
+	}
+	
+	public DinnerDishList getDishes() {
+		return dishes;
 	}
 	
 	public void updateCostLabel() {
