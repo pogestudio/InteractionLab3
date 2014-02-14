@@ -112,7 +112,6 @@ public class DinnerListView extends JPanel implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("update: " + arg);
 		updateCostLabel();
 	}
 }
