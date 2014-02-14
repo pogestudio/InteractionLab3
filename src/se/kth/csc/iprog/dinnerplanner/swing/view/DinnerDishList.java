@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -21,15 +20,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.EmptyBorder;
 
 import se.kth.csc.iprog.dinnerplanner.model.Dish;
 
 import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
 
-public class DinnerDishList extends JList {
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public class DinnerDishList extends JList implements Observer {
 
 	private static final long serialVersionUID = 1L;
 	private static JButton testbutton;
@@ -38,31 +36,27 @@ public class DinnerDishList extends JList {
 	private static int numberOfPeople = 1;
 	
 	public interface DinnerListListener {
-		void onChanged();
 		void onAdded(Dish dish);
 		void onRemoved(Dish dish);
 	}
-	
+
 	private ArrayList<DinnerListListener> listeners;
 
-	protected void onChange() {
-		for(DinnerListListener l : listeners)
-			l.onChanged();
-	}
-	protected void onAdd(Dish dish) {
-		for(DinnerListListener l : listeners)
+	protected void onAdded(Dish dish) {
+		for (DinnerListListener l : listeners)
 			l.onAdded(dish);
 	}
+
 	protected void onRemoved(Dish dish) {
-		for(DinnerListListener l : listeners)
+		for (DinnerListListener l : listeners)
 			l.onRemoved(dish);
 	}
-	
+
 	public void addListener(DinnerListListener listener) {
 		listeners.add(listener);
 	}
 	
-	private DinnerModel chosenModel;
+	private DinnerModel model;
 
 	public static class CellRenderer extends JPanel implements ListCellRenderer {
 		private static final long serialVersionUID = 1L;
@@ -113,32 +107,23 @@ public class DinnerDishList extends JList {
 		}
 	}
 
-	public DinnerDishList(DefaultListModel model) {
-		super(model);
+	public DinnerDishList(DinnerModel model) {
+		super(new DefaultListModel());
 	    listeners = new ArrayList<DinnerListListener>();
+	    this.model = model;
+	    this.model.addObserver(this);
 
 		setCellRenderer(new CellRenderer());
-		setDropMode(DropMode.INSERT);
+		setDropMode(DropMode.ON);
 		setDragEnabled(false);
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		setTransferHandler(new DishReceiverHandler(model));
+		setTransferHandler(new DishReceiverHandler((DefaultListModel)getModel()));
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent event) {
 				clickButton(event.getPoint());
 			}
 		});
-	}
-	
-	
-	public void setDinnerModel(DinnerModel model)
-	{
-		this.chosenModel = model;
-	}
-	
-	public DinnerModel getDinnerModel()
-	{
-		return this.chosenModel;
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -151,8 +136,6 @@ public class DinnerDishList extends JList {
 		
 		if(testbutton.getBounds().inside(point.x, point.y)) {
 			onRemoved((Dish)m.getElementAt(index));
-			onChange();
-			m.remove(index);
 		}
 		if(testimage.getBounds().inside(point.x, point.y)) {
 			DishDetails.OpenWindow((Dish)m.getElementAt(index));
@@ -163,6 +146,18 @@ public class DinnerDishList extends JList {
 		DinnerDishList.numberOfPeople = numberOfPeople;
 		
 		this.repaint();
+	}
+	@Override
+	public void update(Observable o, Object arg) {
+		DefaultListModel m = (DefaultListModel)this.getModel();
+		
+		m.clear();
+		for(int i = 1; i <= 3; ++i)
+		{
+			Dish d = model.getSelectedDish(i);
+			if(d != null)
+				m.addElement(d);
+		}
 	}
 
 }

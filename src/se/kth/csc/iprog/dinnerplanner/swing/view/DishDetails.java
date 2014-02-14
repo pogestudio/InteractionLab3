@@ -6,8 +6,6 @@ import java.util.Set;
 
 import javax.swing.*;
 
-import external.WrapLayout;
-
 import se.kth.csc.iprog.dinnerplanner.model.Dish;
 import se.kth.csc.iprog.dinnerplanner.model.Ingredient;
 

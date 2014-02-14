@@ -3,13 +3,10 @@ package se.kth.csc.iprog.dinnerplanner.swing.view;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,15 +16,13 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
-import se.kth.csc.iprog.dinnerplanner.model.Dish;
-
 import external.WrapLayout;
 
 import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
-import se.kth.csc.iprog.dinnerplanner.model.DishListListener;
 import se.kth.csc.iprog.dinnerplanner.model.Ingredient;
 import se.kth.csc.iprog.dinnerplanner.swing.controller.ListIngredientsController;
 import se.kth.csc.iprog.dinnerplanner.swing.view.DinnerDishList.DinnerListListener;
+import se.kth.csc.iprog.dinnerplanner.swing.controller.DinnerDishListController;
 
 public class DinnerListView extends JPanel implements Observer{
 
@@ -37,8 +32,10 @@ public class DinnerListView extends JPanel implements Observer{
 	private DinnerModel thaDinnerModel;
 	private JLabel totalCostLabel;
 	private JSpinner numPeopleSpinner; 
+	JButton preparation;
+	JButton ingredients;
+	DinnerDishListController dishesController;
 	
-	@SuppressWarnings("unchecked")
 	public DinnerListView (DinnerModel model) {
 		
 		thaDinnerModel = model;
@@ -55,7 +52,6 @@ public class DinnerListView extends JPanel implements Observer{
 		SpinnerModel spinmodel = new SpinnerNumberModel(2, 1, 100, 1);
 		numPeopleSpinner = new JSpinner(spinmodel);
 		
-		
 		top.add(numPeopleSpinner);
 		top.add(new JLabel("Total cost: "));
 		
@@ -68,31 +64,11 @@ public class DinnerListView extends JPanel implements Observer{
 		JPanel middle = new JPanel();
 		middle.setLayout(new BorderLayout());
 	
-		
-		@SuppressWarnings("rawtypes")
-		DefaultListModel lmodel = new DefaultListModel();
-		for(Dish d : thaDinnerModel.getFullMenu()) {
-			lmodel.addElement(d);
-		}
-		
-		DishListListener dishListener = new DishListListener();
-		dishListener.setDinnerList(lmodel);
-		dishListener.setThaDinnerModel(thaDinnerModel);
-		//lmodel.addListDataListener(dishListener);
-
-		dishes = new DinnerDishList(lmodel);
+		dishes = new DinnerDishList(thaDinnerModel);
 		dishes.setLayout(new WrapLayout());
-		dishes.addListener(dishListener);
-			dishes.addListener(new DinnerListListener() {
-			@Override
-			public void onChanged() {
-				updateCostLabel();
-			}
-			@Override
-			public void onAdded(Dish dish) {}
-			@Override
-			public void onRemoved(Dish dish) {}
-		});
+		
+		dishesController = new DinnerDishListController(thaDinnerModel, dishes);
+		
 		JLabel title = new JLabel("Dinner menu", JLabel.CENTER);
 		title.setFont(new Font(title.getFont().getName(), Font.PLAIN, 30));
 		middle.add(title, BorderLayout.NORTH);
@@ -101,48 +77,34 @@ public class DinnerListView extends JPanel implements Observer{
 		middle.add(scroll, BorderLayout.CENTER);
 		scroll.setBorder(new EmptyBorder(0,0,0,0));
 	
-		
 		this.add(middle, BorderLayout.CENTER);
 		
 		//Bottom - buttons
 		JPanel bottom = new JPanel();
 
-		JButton preparation =new JButton("Preparation"); 
+		preparation =new JButton("Preparation"); 
 		bottom.add(preparation);
-		JButton ingredients =new JButton("Ingredients"); 
+		ingredients =new JButton("Ingredients"); 
 		bottom.add(ingredients);
-		
-		preparation.addActionListener(new ActionListener() {
-			  public void actionPerformed(ActionEvent evt) {
-			   System.out.println("want to POPPRESENTATION");
-			   
-			   if(thaDinnerModel != null){
-				   DinnerPrepView.OpenWindow(thaDinnerModel);
-			   }
-			  }
-			});
-		ingredients.addActionListener(new ActionListener() {
-			  public void actionPerformed(ActionEvent evt) {
-				  
-				   if(thaDinnerModel != null)
-				  {
-					  //thaDinnerModel.tempSeedOfChoice();
-					  
-					  ListIngredientsController uberList = new ListIngredientsController(thaDinnerModel);
-					  uberList.OpenWindowForDinner();
-					  
-
-				  }
-			   System.out.println("want to Ingredients");
-			  }
-			});
 
 		this.add(bottom, BorderLayout.SOUTH);
 		updateCostLabel();
 	}
+
+	public void addPreparationButtonListener(ActionListener listener) {
+		preparation.addActionListener(listener);
+	}
+	
+	public void addIngredientsButtonListener(ActionListener listener) {
+		ingredients.addActionListener(listener);
+	}
 	
 	public JSpinner getNumPeopleSpinner() {
 		return numPeopleSpinner;
+	}
+	
+	public DinnerDishList getDishes() {
+		return dishes;
 	}
 	
 	public void updateCostLabel() {
@@ -153,7 +115,6 @@ public class DinnerListView extends JPanel implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("update: " + arg);
 		updateCostLabel();
 	}
 }

@@ -26,8 +26,8 @@ public class ListIngredientsController implements Observer {
 		this.thaView = new ListIngredients();
 		JFrame theFrame = getRegularFrame();
 		updateTable();	
-		
 	}
+	
 	
 	public void removeTable()
 	{

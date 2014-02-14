@@ -9,7 +9,7 @@ public class DinnerModel extends Observable implements IDinnerModel {
 
 	Set<Dish> dishes = new HashSet<Dish>();
 	ArrayList<Dish> selectedDishes;
-	int _numberOfGuests = 0;
+	int _numberOfGuests = 2;
 
 	/**
 	 * TODO: For Lab2 you need to implement the IDinnerModel interface. When you do this you will have all the needed
@@ -211,12 +211,7 @@ public class DinnerModel extends Observable implements IDinnerModel {
 	 * Returns the total price of the menu (all the ingredients multiplied by number of guests).
 	 */
 	public float getTotalMenuPrice() {
-		/*Set<Ingredient> allIngredients = getAllIngredients();
-		float totalPrice = 0;
-		for (Ingredient i : allIngredients) {
-			totalPrice += i.getPrice() * getNumberOfGuests();
-		}
-		return totalPrice;*/
+
 		float totalPrice = 0;
 		for(Dish d : selectedDishes) {
 			if(d != null)
@@ -227,25 +222,16 @@ public class DinnerModel extends Observable implements IDinnerModel {
 
 	// Add dish to currently selectd dishes!
 	public void selectDish(Dish dishToSelect) {
-		/*for (int i = 0; selectedDishes.size() > i; i++) {
-			Dish d = selectedDishes.get(i);
-			if (d != null && d.type == dishToSelect.type) {
-				selectedDishes.set(i, null);
-			}
-		}*/
 
 		selectedDishes.set(dishToSelect.type - 1, dishToSelect);
-		System.out.println("Added dish!");
 		setChanged();
 		notifyObservers();
 	}
 
 	// Add dish to currently selectd dishes!
 	public void deleteDish(Dish dishToDelete) {
-		
 		if(selectedDishes.get(dishToDelete.type - 1) == dishToDelete);
 			selectedDishes.set(dishToDelete.type - 1, null);
-		System.out.println("Removed dish");
 		setChanged();
 		notifyObservers();
 	}

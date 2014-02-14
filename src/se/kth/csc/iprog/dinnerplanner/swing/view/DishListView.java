@@ -18,6 +18,9 @@ import external.WrapLayout;
 
 import se.kth.csc.iprog.dinnerplanner.model.Dish;
 import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
+
+
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class DishListView extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private JList dishes;
@@ -142,7 +145,6 @@ public class DishListView extends JPanel{
 		return dishNames;
 	}
 
-	@SuppressWarnings("deprecation")
 	private void clickButton(Point point) {
 	    int index = dishes.locationToIndex(point);
 		
