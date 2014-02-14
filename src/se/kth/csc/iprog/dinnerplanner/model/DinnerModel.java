@@ -9,7 +9,7 @@ public class DinnerModel extends Observable implements IDinnerModel {
 
 	Set<Dish> dishes = new HashSet<Dish>();
 	ArrayList<Dish> selectedDishes;
-	int _numberOfGuests = 0;
+	int _numberOfGuests = 2;
 
 	/**
 	 * TODO: For Lab2 you need to implement the IDinnerModel interface. When you do this you will have all the needed

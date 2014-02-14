@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,13 +16,10 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
-import se.kth.csc.iprog.dinnerplanner.model.Dish;
-
 import external.WrapLayout;
 
 import se.kth.csc.iprog.dinnerplanner.model.DinnerModel;
-import se.kth.csc.iprog.dinnerplanner.model.DishListListener;
-import se.kth.csc.iprog.dinnerplanner.swing.view.DinnerDishList.DinnerListListener;
+import se.kth.csc.iprog.dinnerplanner.swing.controller.DinnerDishListController;
 
 public class DinnerListView extends JPanel implements Observer{
 
@@ -35,8 +31,8 @@ public class DinnerListView extends JPanel implements Observer{
 	private JSpinner numPeopleSpinner; 
 	JButton preparation;
 	JButton ingredients;
+	DinnerDishListController dishesController;
 	
-	@SuppressWarnings("unchecked")
 	public DinnerListView (DinnerModel model) {
 		
 		thaDinnerModel = model;
@@ -53,7 +49,6 @@ public class DinnerListView extends JPanel implements Observer{
 		SpinnerModel spinmodel = new SpinnerNumberModel(2, 1, 100, 1);
 		numPeopleSpinner = new JSpinner(spinmodel);
 		
-		
 		top.add(numPeopleSpinner);
 		top.add(new JLabel("Total cost: "));
 		
@@ -66,31 +61,11 @@ public class DinnerListView extends JPanel implements Observer{
 		JPanel middle = new JPanel();
 		middle.setLayout(new BorderLayout());
 	
-		
-		@SuppressWarnings("rawtypes")
-		DefaultListModel lmodel = new DefaultListModel();
-		for(Dish d : thaDinnerModel.getFullMenu()) {
-			lmodel.addElement(d);
-		}
-		
-		DishListListener dishListener = new DishListListener();
-		dishListener.setDinnerList(lmodel);
-		dishListener.setThaDinnerModel(thaDinnerModel);
-		//lmodel.addListDataListener(dishListener);
-
-		dishes = new DinnerDishList(lmodel);
+		dishes = new DinnerDishList(thaDinnerModel);
 		dishes.setLayout(new WrapLayout());
-		dishes.addListener(dishListener);
-			dishes.addListener(new DinnerListListener() {
-			@Override
-			public void onChanged() {
-				updateCostLabel();
-			}
-			@Override
-			public void onAdded(Dish dish) {}
-			@Override
-			public void onRemoved(Dish dish) {}
-		});
+		
+		dishesController = new DinnerDishListController(thaDinnerModel, dishes);
+		
 		JLabel title = new JLabel("Dinner menu", JLabel.CENTER);
 		title.setFont(new Font(title.getFont().getName(), Font.PLAIN, 30));
 		middle.add(title, BorderLayout.NORTH);
